@@ -36,7 +36,7 @@ void loop() {
       alarmeLigado = true;
       Serial.println("Alarme ATIVADO via Bluetooth.");
       bluetooth.println("Alarme ON"); // Envia confirmação de volta para o aplicativo
-    } else if (receivedChar == '0') { // Assumindo que '0' DESLIGA o alarme
+    } else if (sinal == '0') { // Assumindo que '0' DESLIGA o alarme
       alarmeLigado = false;
       Serial.println("Alarme DESATIVADO via Bluetooth.");
       bluetooth.println("Alarme OFF"); // Envia confirmação de volta para o aplicativo
