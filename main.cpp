@@ -54,7 +54,7 @@ void loop() {
       SensorDetectou = true;
       // Acrescentar um delay de 5 segundos após o alarme ser acionado pelo sensor de presença.
       Serial.println("Alarme acionado!");
-      bluetooth.println("ALARM TRIGGERED!"); // Notifica o aplicativo
+      //bluetooth.println("ALARM TRIGGERED!"); // Notifica o aplicativo
     }
   } else {
     // Se o alarme estiver desativado, garante que a saída permaneça desligada
