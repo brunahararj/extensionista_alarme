@@ -9,8 +9,8 @@ SoftwareSerial bluetooth(10, 11); // RX, TX
 const int pinoEntrada = 7; 
 const int pinoSaida = 4; 
 
-bool alarmeLigado = true; // O alarme começa ativado por padrão
-
+bool alarmeAcionado = true; // O alarme começa ativado por padrão
+bool SensorDetectou = false;
 void setup() {
   Serial.begin(9600);    // Inicializa a comunicação serial de hardware para depuração
   bluetooth.begin(9900); // Inicializa a comunicação serial de software para o Bluetooth
@@ -32,25 +32,26 @@ void loop() {
     Serial.print("Recebido via Bluetooth: ");
     Serial.println(sinal);
 
-    if (sinal == '1') { 
-      alarmeLigado = true;
+    if (sinal == '0') { 
+      alarmeAcionado = true;
       Serial.println("Alarme ATIVADO via Bluetooth.");
       bluetooth.println("Alarme ON"); // Envia confirmação de volta para o aplicativo
-    } else if (sinal == '0') { // Assumindo que '0' DESLIGA o alarme
-      alarmeLigado = false;
+    } else if (sinal == '1') { // Assumindo que '0' DESLIGA o alarme
+      alarmeAcionado = false;
       Serial.println("Alarme DESATIVADO via Bluetooth.");
       bluetooth.println("Alarme OFF"); // Envia confirmação de volta para o aplicativo
-      digitalWrite(pinoSaida, HIGH); // Garante que o alarme esteja desligado quando desativado
+      //digitalWrite(pinoSaida, HIGH); // Garante que o alarme esteja desligado quando desativado
     }
   }
 
   // Verifica o sensor do alarme somente se o alarme estiver ativado
-  if (alarmeLigado) {
-    if (digitalRead(pinoEntrada) == HIGH) { // Se o sensor estiver HIGH (sem gatilho)
+  if (alarmeAcionado) {
+    if ((digitalRead(pinoEntrada) == HIGH) && !SensorDetectou ) { // Se o sensor estiver HIGH (sem gatilho)
       digitalWrite(pinoSaida, LOW); // Alarme DESLIGADO (sem 0V)
+      
     } else { // Se o sensor estiver LOW (acionado)
       digitalWrite(pinoSaida, HIGH); // Alarme LIGADO (5V no pino 4, baseado no comentário do seu código original)
-      delay (5000); 
+      SensorDetectou = true;
       // Acrescentar um delay de 5 segundos após o alarme ser acionado pelo sensor de presença.
       Serial.println("Alarme acionado!");
       bluetooth.println("ALARM TRIGGERED!"); // Notifica o aplicativo
@@ -58,6 +59,10 @@ void loop() {
   } else {
     // Se o alarme estiver desativado, garante que a saída permaneça desligada
     //ATENÇÃO!! Testar uma nova condição para desligar alarme: Só desativa quando um botão no app for pressionado
-    digitalWrite(pinoSaida, HIGH); // Alarme DESLIGADO (sem 0V)
+    digitalWrite(pinoSaida, LOW); // Alarme DESLIGADO (sem 0V)
+    SensorDetectou = false;
   }
+
+  //Delay para acionar o alarme (medição)
+  //BLUETOOTH: 
 }
