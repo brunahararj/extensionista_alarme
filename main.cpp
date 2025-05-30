@@ -26,7 +26,6 @@ void setup() {
 
 void loop() {
   // Lê dados do módulo Bluetooth
-  //Alocar condição de desligar alarme quando for acionado pelo sensor de presença (porta 7)
   if (bluetooth.available()) {
     char sinal = bluetooth.read();
     Serial.print("Recebido via Bluetooth: ");
@@ -36,11 +35,11 @@ void loop() {
       alarmeAcionado = true;
       Serial.println("Alarme ATIVADO via Bluetooth.");
       bluetooth.println("Alarme ON"); // Envia confirmação de volta para o aplicativo
-    } else if (sinal == '1') { // Assumindo que '0' DESLIGA o alarme
+    } else if (sinal == '1') { 
       alarmeAcionado = false;
       Serial.println("Alarme DESATIVADO via Bluetooth.");
-      bluetooth.println("Alarme OFF"); // Envia confirmação de volta para o aplicativo
-      //digitalWrite(pinoSaida, HIGH); // Garante que o alarme esteja desligado quando desativado
+      bluetooth.println("Alarme OFF");
+      
     }
   }
 
@@ -50,19 +49,13 @@ void loop() {
       digitalWrite(pinoSaida, LOW); // Alarme DESLIGADO (sem 0V)
       
     } else { // Se o sensor estiver LOW (acionado)
-      digitalWrite(pinoSaida, HIGH); // Alarme LIGADO (5V no pino 4, baseado no comentário do seu código original)
+      digitalWrite(pinoSaida, HIGH); // Alarme LIGADO (5V no pino 4)
       SensorDetectou = true;
-      // Acrescentar um delay de 5 segundos após o alarme ser acionado pelo sensor de presença.
       Serial.println("Alarme acionado!");
-      //bluetooth.println("ALARM TRIGGERED!"); // Notifica o aplicativo
     }
   } else {
     // Se o alarme estiver desativado, garante que a saída permaneça desligada
-    //ATENÇÃO!! Testar uma nova condição para desligar alarme: Só desativa quando um botão no app for pressionado
-    digitalWrite(pinoSaida, LOW); // Alarme DESLIGADO (sem 0V)
+    digitalWrite(pinoSaida, LOW); // Alarme DESLIGADO
     SensorDetectou = false;
   }
-
-  //Delay para acionar o alarme (medição)
-  //BLUETOOTH: 
 }
